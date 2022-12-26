@@ -54,5 +54,5 @@ one.
 #define TRIGGERFISH_RED_BLACK_TREE_ERROR_OUT_IS_NULL  2
 
 // generic error
-#define TRIGGEERFISH_ERROR_OUT_IS_NULL                1
+#define TRIGGERFISH_ERROR_OUT_IS_NULL                 1
 ```
