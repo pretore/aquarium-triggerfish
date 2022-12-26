@@ -53,6 +53,24 @@ extern int cmocka_test_pthread_mutex_destroy(pthread_mutex_t *mutex,
     cmocka_test_pthread_mutex_destroy(mutex, __FILE__, __LINE__)
 extern bool pthread_mutex_destroy_is_overridden;
 
+extern int cmocka_test_pthread_mutex_lock(pthread_mutex_t *mutex,
+                                          const char *file, int line);
+#define pthread_mutex_lock(mutex) \
+    cmocka_test_pthread_mutex_lock(mutex, __FILE__, __LINE__)
+extern bool pthread_mutex_lock_is_overridden;
+
+extern int cmocka_test_pthread_mutex_trylock(pthread_mutex_t *mutex,
+                                             const char *file, int line);
+#define pthread_mutex_trylock(mutex) \
+    cmocka_test_pthread_mutex_trylock(mutex, __FILE__, __LINE__)
+extern bool pthread_mutex_trylock_is_overridden;
+
+extern int cmocka_test_pthread_mutex_unlock(pthread_mutex_t *mutex,
+                                            const char *file, int line);
+#define pthread_mutex_unlock(mutex) \
+    cmocka_test_pthread_mutex_unlock(mutex, __FILE__, __LINE__)
+extern bool pthread_mutex_unlock_is_overridden;
+
 #endif //TEST
 
 #endif /* _ROCK_TEST_CMOCKA_H_ */

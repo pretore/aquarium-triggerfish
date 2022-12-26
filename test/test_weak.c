@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <setjmp.h>
 #include <cmocka.h>
+#include <errno.h>
 #include <string.h>
 #include <triggerfish.h>
 
@@ -51,7 +52,10 @@ static void check_of_error_on_strong_is_invalid(void **state) {
     triggerfish_error = TRIGGERFISH_ERROR_NONE;
     struct triggerfish_strong strong = {};
     struct triggerfish_weak *out;
+    pthread_mutex_lock_is_overridden = true;
+    will_return(cmocka_test_pthread_mutex_lock, EINVAL);
     assert_false(triggerfish_weak_of(&strong, &out));
+    pthread_mutex_lock_is_overridden = false;
     assert_int_equal(TRIGGERFISH_WEAK_ERROR_STRONG_IS_INVALID,
                      triggerfish_error);
     triggerfish_error = TRIGGERFISH_ERROR_NONE;

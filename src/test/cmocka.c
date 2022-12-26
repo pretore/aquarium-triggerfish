@@ -35,3 +35,41 @@ int cmocka_test_pthread_mutex_destroy(pthread_mutex_t *mutex,
     return func(mutex);
 }
 
+bool pthread_mutex_lock_is_overridden = false;
+int cmocka_test_pthread_mutex_lock(pthread_mutex_t *mutex,
+                                   const char *file, int line) {
+    if (pthread_mutex_lock_is_overridden) {
+        return mock();
+    }
+    static int (*func)(pthread_mutex_t *) = NULL;
+    if (!func) {
+        func = dlsym(RTLD_NEXT, u8"pthread_mutex_lock");
+    }
+    return func(mutex);
+}
+
+bool pthread_mutex_trylock_is_overridden = false;
+int cmocka_test_pthread_mutex_trylock(pthread_mutex_t *mutex,
+                                      const char *file, int line) {
+    if (pthread_mutex_trylock_is_overridden) {
+        return mock();
+    }
+    static int (*func)(pthread_mutex_t *) = NULL;
+    if (!func) {
+        func = dlsym(RTLD_NEXT, u8"pthread_mutex_trylock");
+    }
+    return func(mutex);
+}
+
+bool pthread_mutex_unlock_is_overridden = false;
+int cmocka_test_pthread_mutex_unlock(pthread_mutex_t *mutex,
+                                     const char *file, int line) {
+    if (pthread_mutex_unlock_is_overridden) {
+        return mock();
+    }
+    static int (*func)(pthread_mutex_t *) = NULL;
+    if (!func) {
+        func = dlsym(RTLD_NEXT, u8"pthread_mutex_unlock");
+    }
+    return func(mutex);
+}

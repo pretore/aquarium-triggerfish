@@ -108,16 +108,6 @@ static void check_release_error_on_object_is_null(void **state) {
     triggerfish_error = TRIGGERFISH_ERROR_NONE;
 }
 
-static void check_release_abort_on_object_is_invalid(void **state) {
-    triggerfish_error = TRIGGERFISH_ERROR_NONE;
-    struct triggerfish_strong object = {};
-    abort_is_overridden = true;
-    expect_function_call(cmocka_test_abort);
-    triggerfish_strong_release(&object);
-    abort_is_overridden = false;
-    triggerfish_error = TRIGGERFISH_ERROR_NONE;
-}
-
 static void check_release(void **state) {
     triggerfish_error = TRIGGERFISH_ERROR_NONE;
     void *instance = malloc(1);
@@ -180,7 +170,6 @@ int main(int argc, char *argv[]) {
             cmocka_unit_test(check_retain_error_on_object_is_invalid),
             cmocka_unit_test(check_retain),
             cmocka_unit_test(check_release_error_on_object_is_null),
-            cmocka_unit_test(check_release_abort_on_object_is_invalid),
             cmocka_unit_test(check_release),
             cmocka_unit_test(check_instance_error_on_object_is_null),
             cmocka_unit_test(check_instance_error_on_out_is_null),
