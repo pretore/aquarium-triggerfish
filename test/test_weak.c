@@ -125,6 +125,34 @@ static void check_strong(void **state) {
     triggerfish_error = TRIGGERFISH_ERROR_NONE;
 }
 
+static void check_case_where_strong_outlives_weak(void **state) {
+    triggerfish_error = TRIGGERFISH_ERROR_NONE;
+    struct triggerfish_strong *strong;
+    assert_true(triggerfish_strong_of(malloc(1), on_destroy, &strong));
+    struct triggerfish_weak *weak;
+    assert_true(triggerfish_weak_of(strong, &weak));
+    expect_function_call(on_destroy);
+    assert_true(triggerfish_strong_release(strong));
+    assert_ptr_equal(atomic_load(&weak->strong), 0);
+    assert_true(triggerfish_weak_destroy(weak));
+    triggerfish_error = TRIGGERFISH_ERROR_NONE;
+}
+
+static void check_case_where_weak_outlives_strong(void **state) {
+    triggerfish_error = TRIGGERFISH_ERROR_NONE;
+    struct triggerfish_strong *strong;
+    assert_true(triggerfish_strong_of(malloc(1), on_destroy, &strong));
+    struct triggerfish_weak *weak;
+    assert_true(triggerfish_weak_of(strong, &weak));
+    coral_error = CORAL_ERROR_NONE;
+    assert_true(triggerfish_weak_destroy(weak));
+    /* ensure that we found weak within the strong reference */
+    assert_int_equal(coral_error, CORAL_ERROR_NONE);
+    expect_function_call(on_destroy);
+    assert_true(triggerfish_strong_release(strong));
+    triggerfish_error = TRIGGERFISH_ERROR_NONE;
+}
+
 int main(int argc, char *argv[]) {
     const struct CMUnitTest tests[] = {
             cmocka_unit_test(check_destroy_error_on_object_is_null),
@@ -138,6 +166,8 @@ int main(int argc, char *argv[]) {
             cmocka_unit_test(check_strong_error_on_out_is_null),
             cmocka_unit_test(check_strong_error_strong_is_invalid),
             cmocka_unit_test(check_strong),
+            cmocka_unit_test(check_case_where_strong_outlives_weak),
+            cmocka_unit_test(check_case_where_weak_outlives_strong),
     };
     //cmocka_set_message_output(CM_OUTPUT_XML);
     return cmocka_run_group_tests(tests, NULL, NULL);

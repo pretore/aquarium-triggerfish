@@ -8,6 +8,12 @@
 #include "private/weak.h"
 #include "test/cmocka.h"
 
+static int compare(const void *a, const void *b) {
+    struct triggerfish_weak **A = (void *) a;
+    struct triggerfish_weak **B = (void *) b;
+    return seagrass_void_ptr_compare(*A, *B);
+}
+
 bool triggerfish_strong_of(void *const instance,
                            void (*const on_destroy)(void *instance),
                            struct triggerfish_strong **const out) {
@@ -45,7 +51,7 @@ bool triggerfish_strong_of(void *const instance,
     seagrass_required_true(coral_red_black_tree_set_init(
             &object->weak_refs,
             sizeof(struct triggerfish_weak *),
-            seagrass_void_ptr_compare));
+            compare));
     object->instance = instance;
     object->on_destroy = on_destroy;
     atomic_store(&object->counter, 1);
