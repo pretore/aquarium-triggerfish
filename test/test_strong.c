@@ -50,7 +50,8 @@ static void check_of_error_on_memory_allocation_failed(void **state) {
     triggerfish_error = TRIGGERFISH_ERROR_NONE;
 }
 
-static void on_destroy(void *object) {
+static void on_destroy(void *instance) {
+    assert_non_null(instance);
     function_called();
 }
 

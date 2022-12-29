@@ -214,8 +214,15 @@ void triggerfish_strong_unregister(struct triggerfish_strong *const object,
     }
     if (!coral_red_black_tree_set_remove(&object->weak_refs,
                                          &weak)) {
-        seagrass_required_true(CORAL_RED_BLACK_TREE_SET_ERROR_VALUE_NOT_FOUND
-                               == coral_error);
+        switch (coral_error) {
+            default: {
+                seagrass_required_true(false);
+            }
+            case CORAL_RED_BLACK_TREE_SET_ERROR_MEMORY_ALLOCATION_FAILED:
+            case CORAL_RED_BLACK_TREE_SET_ERROR_VALUE_NOT_FOUND: {
+                break;
+            }
+        }
     }
     seagrass_required_true(!pthread_mutex_unlock(&object->lock));
 }

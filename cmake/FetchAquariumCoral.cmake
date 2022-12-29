@@ -3,7 +3,7 @@ include(FetchContent)
 FetchContent_Declare(
         aquarium-coral
         GIT_REPOSITORY https://github.com/pretore/aquarium-coral.git
-        GIT_TAG v1.2.0
+        GIT_TAG v1.3.0
         GIT_SHALLOW 1
 )
 
