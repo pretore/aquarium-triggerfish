@@ -36,7 +36,8 @@ static void check_case_where_weak_outlives_strong(void **state) {
     assert_true(triggerfish_weak_of(strong, &weak));
     coral_error = CORAL_ERROR_NONE;
     assert_true(triggerfish_weak_destroy(weak));
-    /* ensure that we found the weak reference within the strong reference */
+    /* ensure that we found the weak reference within the strong reference
+     * by checking the absence of an error ... */
     assert_int_equal(coral_error, CORAL_ERROR_NONE);
     expect_function_call(on_destroy);
     assert_true(triggerfish_strong_release(strong));

@@ -24,6 +24,27 @@ static void check_destroy(void **state) {
     triggerfish_error = TRIGGERFISH_ERROR_NONE;
 }
 
+static void on_destroy(void *instance) {
+    assert_non_null(instance);
+    function_called();
+}
+
+static void check_destroy_error_on_low_memory_situation(void **state) {
+    triggerfish_error = TRIGGERFISH_ERROR_NONE;
+    struct triggerfish_strong *strong;
+    assert_true(triggerfish_strong_of(malloc(1), on_destroy, &strong));
+    struct triggerfish_weak *object;
+    assert_true(triggerfish_weak_of(strong, &object));
+    malloc_is_overridden = calloc_is_overridden = realloc_is_overridden
+            = posix_memalign_is_overridden = true;
+    assert_true(triggerfish_weak_destroy(object));
+    malloc_is_overridden = calloc_is_overridden = realloc_is_overridden
+            = posix_memalign_is_overridden = false;
+    expect_function_call(on_destroy);
+    assert_true(triggerfish_strong_release(strong));
+    triggerfish_error = TRIGGERFISH_ERROR_NONE;
+}
+
 static void check_of_error_on_strong_is_null(void **state) {
     triggerfish_error = TRIGGERFISH_ERROR_NONE;
     assert_false(triggerfish_weak_of(NULL, (void *)1));
@@ -59,11 +80,6 @@ static void check_of_error_on_strong_is_invalid(void **state) {
     assert_int_equal(TRIGGERFISH_WEAK_ERROR_STRONG_IS_INVALID,
                      triggerfish_error);
     triggerfish_error = TRIGGERFISH_ERROR_NONE;
-}
-
-static void on_destroy(void *instance) {
-    assert_non_null(instance);
-    function_called();
 }
 
 static void check_of(void **state) {
@@ -130,6 +146,7 @@ int main(int argc, char *argv[]) {
     const struct CMUnitTest tests[] = {
             cmocka_unit_test(check_destroy_error_on_object_is_null),
             cmocka_unit_test(check_destroy),
+            cmocka_unit_test(check_destroy_error_on_low_memory_situation),
             cmocka_unit_test(check_of_error_on_strong_is_null),
             cmocka_unit_test(check_of_error_on_out_is_null),
             cmocka_unit_test(check_of_error_on_memory_allocation_failed),

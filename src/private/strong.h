@@ -20,10 +20,29 @@ struct triggerfish_strong {
     void (*on_destroy)(void *instance);
 };
 
+/**
+ * @brief Register weak reference for invalidation when strong reference is
+ * destroyed.
+ * @param [in] object strong reference.
+ * @param [in] weak reference that will be invalidated.
+ * @return On success true, otherwise false if an error has occurred.
+ * @throws TRIGGERFISH_STRONG_ERROR_OBJECT_IS_INVALID if object has been
+ * invalidated.
+ * @throws TRIGGERFISH_STRONG_ERROR_WEAK_ALREADY_REGISTERED if weak reference
+ * is already registered.
+ * @throws TRIGGERFISH_STRONG_ERROR_MEMORY_ALLOCATION_FAILED if there is
+ * insufficient memory to register weak reference.
+ */
 bool triggerfish_strong_register(struct triggerfish_strong *object,
                                  struct triggerfish_weak *weak);
 
+/**
+ * @brief Unregister weak reference for invalidation when strong reference is
+ * destroyed.
+ * @param [in] object strong reference.
+ * @param [in] weak reference that will be invalidated.
+ */
 void triggerfish_strong_unregister(struct triggerfish_strong *object,
-                                   struct triggerfish_weak *weak);
+                                   const struct triggerfish_weak *weak);
 
 #endif /* _TRIGGERFISH_PRIVATE_STRONG_H_ */

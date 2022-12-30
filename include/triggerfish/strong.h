@@ -33,6 +33,17 @@ bool triggerfish_strong_of(void *instance,
                            struct triggerfish_strong **out);
 
 /**
+ * @brief Retrieve the reference count.
+ * @param [in] object strong reference.
+ * @param [out] out receive the reference count.
+ * @return On success true, otherwise false if an error has occurred.
+ * @throws TRIGGERFISH_STRONG_ERROR_OBJECT_IS_NULL if object is <i>NULL</i>.
+ * @throws TRIGGERFISH_STRONG_ERROR_OUT_IS_NULL if out is <i>NULL</i>.
+ */
+bool triggerfish_strong_count(struct triggerfish_strong *object,
+                              uintmax_t *out);
+
+/**
  * @brief Increase the reference count.
  * @param [in] object strong reference.
  * @return On success true, otherwise false if an error has occurred.

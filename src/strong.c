@@ -59,6 +59,20 @@ bool triggerfish_strong_of(void *const instance,
     return true;
 }
 
+bool triggerfish_strong_count(struct triggerfish_strong *const object,
+                              uintmax_t *const out) {
+    if (!object) {
+        triggerfish_error = TRIGGERFISH_STRONG_ERROR_OBJECT_IS_NULL;
+        return false;
+    }
+    if (!out) {
+        triggerfish_error = TRIGGERFISH_STRONG_ERROR_OUT_IS_NULL;
+        return false;
+    }
+    *out = atomic_load(&object->counter);
+    return true;
+}
+
 bool triggerfish_strong_retain(struct triggerfish_strong *const object) {
     if (!object) {
         triggerfish_error = TRIGGERFISH_STRONG_ERROR_OBJECT_IS_NULL;
@@ -97,15 +111,14 @@ bool triggerfish_strong_release(struct triggerfish_strong *const object) {
     }
     seagrass_required_true(!pthread_mutex_lock(&object->lock));
     const uintptr_t check = (uintptr_t) object;
-    struct triggerfish_weak **weak_ref;
+    struct triggerfish_weak **item;
     if (coral_red_black_tree_set_first(&object->weak_refs,
-                                       (const void **) &weak_ref)) {
+                                       (const void **) &item)) {
         do {
-            const uintptr_t value = atomic_load(&(*weak_ref)->strong);
+            const uintptr_t value = atomic_load(&(*item)->strong);
             seagrass_required_true(check == value);
-            atomic_store(&(*weak_ref)->strong, 0);
-        } while (coral_red_black_tree_set_next(weak_ref,
-                                               (const void **) &weak_ref));
+            atomic_store(&(*item)->strong, 0);
+        } while (coral_red_black_tree_set_next(item, (const void **) &item));
         seagrass_required_true(CORAL_RED_BLACK_TREE_SET_ERROR_END_OF_SEQUENCE
                                == coral_error);
     } else {
@@ -198,7 +211,7 @@ bool triggerfish_strong_register(struct triggerfish_strong *const object,
 }
 
 void triggerfish_strong_unregister(struct triggerfish_strong *const object,
-                                   struct triggerfish_weak *const weak) {
+                                   const struct triggerfish_weak *const weak) {
     assert(object);
     assert(weak);
     switch (pthread_mutex_lock(&object->lock)) {
@@ -218,7 +231,31 @@ void triggerfish_strong_unregister(struct triggerfish_strong *const object,
             default: {
                 seagrass_required_true(false);
             }
-            case CORAL_RED_BLACK_TREE_SET_ERROR_MEMORY_ALLOCATION_FAILED:
+            case CORAL_RED_BLACK_TREE_SET_ERROR_MEMORY_ALLOCATION_FAILED: {
+                /* walk the tree in low memory situations */
+                struct triggerfish_weak **item;
+                if (!coral_red_black_tree_set_first(&object->weak_refs,
+                                                    (const void **) &item)) {
+                    seagrass_required_true(
+                            CORAL_RED_BLACK_TREE_SET_ERROR_SET_IS_EMPTY
+                            == coral_error);
+                    break;
+                }
+                while (weak != *item
+                       && coral_red_black_tree_set_next(item,
+                                                        (const void **) &item));
+                if (weak == *item) {
+                    seagrass_required_true(
+                            coral_red_black_tree_set_remove_item(
+                                    &object->weak_refs, item));
+                    break;
+                } else {
+                    seagrass_required_true(
+                            CORAL_RED_BLACK_TREE_SET_ERROR_END_OF_SEQUENCE
+                            == coral_error);
+                }
+                /* fall-through */
+            }
             case CORAL_RED_BLACK_TREE_SET_ERROR_VALUE_NOT_FOUND: {
                 break;
             }
