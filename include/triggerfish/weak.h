@@ -49,7 +49,7 @@ bool triggerfish_weak_destroy(struct triggerfish_weak *object);
  * @throws TRIGGERFISH_WEAK_ERROR_STRONG_IS_INVALID if the strong reference was
  * invalidated.
  */
-bool triggerfish_weak_strong(struct triggerfish_weak *object,
+bool triggerfish_weak_strong(const struct triggerfish_weak *object,
                              struct triggerfish_strong **out);
 
 #endif /* _TRIGGERFISH_WEAK_H_ */

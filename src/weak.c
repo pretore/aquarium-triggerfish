@@ -57,7 +57,7 @@ bool triggerfish_weak_destroy(struct triggerfish_weak *const object) {
     return true;
 }
 
-bool triggerfish_weak_strong(struct triggerfish_weak *const object,
+bool triggerfish_weak_strong(const struct triggerfish_weak *const object,
                              struct triggerfish_strong **const out) {
     if (!object) {
         triggerfish_error = TRIGGERFISH_WEAK_ERROR_OBJECT_IS_NULL;
