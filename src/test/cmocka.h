@@ -71,6 +71,50 @@ extern int cmocka_test_pthread_mutex_unlock(pthread_mutex_t *mutex,
     cmocka_test_pthread_mutex_unlock(mutex, __FILE__, __LINE__)
 extern bool pthread_mutex_unlock_is_overridden;
 
+extern int cmocka_test_pthread_rwlock_init(
+        pthread_rwlock_t *restrict rwlock,
+        const pthread_rwlockattr_t *restrict attr,
+        const char *file, int line);
+#define pthread_rwlock_init(rwlock, attr) \
+    cmocka_test_pthread_rwlock_init(rwlock, attr, __FILE__, __LINE__)
+extern bool pthread_rwlock_init_is_overridden;
+
+extern int cmocka_test_pthread_rwlock_destroy(pthread_rwlock_t *rwlock,
+                                              const char *file, int line);
+#define pthread_rwlock_destroy(rwlock) \
+    cmocka_test_pthread_rwlock_destroy(rwlock, __FILE__, __LINE__)
+extern bool pthread_rwlock_destroy_is_overridden;
+
+extern int cmocka_test_pthread_rwlock_rdlock(pthread_rwlock_t *rwlock,
+                                             const char *file, int line);
+#define pthread_rwlock_rdlock(rwlock) \
+    cmocka_test_pthread_rwlock_rdlock(rwlock, __FILE__, __LINE__)
+extern bool pthread_rwlock_rdlock_is_overridden;
+
+extern int cmocka_test_pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock,
+                                                const char *file, int line);
+#define pthread_rwlock_tryrdlock(rwlock) \
+    cmocka_test_pthread_rwlock_tryrdlock(rwlock, __FILE__, __LINE__)
+extern bool pthread_rwlock_tryrdlock_is_overridden;
+
+extern int cmocka_test_pthread_rwlock_wrlock(pthread_rwlock_t *rwlock,
+                                             const char *file, int line);
+#define pthread_rwlock_wrlock(rwlock) \
+    cmocka_test_pthread_rwlock_wrlock(rwlock, __FILE__, __LINE__)
+extern bool pthread_rwlock_wrlock_is_overridden;
+
+extern int cmocka_test_pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock,
+                                                const char *file, int line);
+#define pthread_rwlock_trywrlock(rwlock) \
+    cmocka_test_pthread_rwlock_trywrlock(rwlock, __FILE__, __LINE__)
+extern bool pthread_rwlock_trywrlock_is_overridden;
+
+extern int cmocka_test_pthread_rwlock_unlock(pthread_rwlock_t *rwlock,
+                                             const char *file, int line);
+#define pthread_rwlock_unlock(rwlock) \
+    cmocka_test_pthread_rwlock_unlock(rwlock, __FILE__, __LINE__)
+extern bool pthread_rwlock_unlock_is_overridden;
+
 #endif //TEST
 
 #endif /* _ROCK_TEST_CMOCKA_H_ */
