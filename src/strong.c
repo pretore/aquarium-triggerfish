@@ -153,7 +153,7 @@ bool triggerfish_strong_release(struct triggerfish_strong *const object) {
     return true;
 }
 
-bool triggerfish_strong_instance(struct triggerfish_strong *const object,
+bool triggerfish_strong_instance(const struct triggerfish_strong *const object,
                                  void **const out) {
     if (!object) {
         triggerfish_error = TRIGGERFISH_STRONG_ERROR_OBJECT_IS_NULL;

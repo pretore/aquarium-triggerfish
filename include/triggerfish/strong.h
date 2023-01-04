@@ -71,7 +71,7 @@ bool triggerfish_strong_release(struct triggerfish_strong *object);
  * @throws TRIGGERFISH_STRONG_ERROR_OBJECT_IS_INVALID if the strong reference
  * instance has been invalidated.
  */
-bool triggerfish_strong_instance(struct triggerfish_strong *object,
+bool triggerfish_strong_instance(const struct triggerfish_strong *object,
                                  void **out);
 
 #endif /* _TRIGGERFISH_STRONG_H_ */
