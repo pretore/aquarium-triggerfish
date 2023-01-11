@@ -7,7 +7,8 @@
 #include <triggerfish.h>
 
 #include "private/strong.h"
-#include "test/cmocka.h"
+
+#include <test/cmocka.h>
 
 static void check_of_error_on_instance_is_null(void **state) {
     triggerfish_error = TRIGGERFISH_ERROR_NONE;

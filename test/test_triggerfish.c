@@ -8,7 +8,8 @@
 #include <triggerfish.h>
 
 #include "private/weak.h"
-#include "test/cmocka.h"
+
+#include <test/cmocka.h>
 
 static void on_destroy(void *instance) {
     assert_non_null(instance);

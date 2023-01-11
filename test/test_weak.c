@@ -8,7 +8,8 @@
 
 #include "private/strong.h"
 #include "private/weak.h"
-#include "test/cmocka.h"
+
+#include <test/cmocka.h>
 
 static void check_destroy_error_on_object_is_null(void **state) {
     triggerfish_error = TRIGGERFISH_ERROR_NONE;

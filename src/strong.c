@@ -6,7 +6,10 @@
 
 #include "private/strong.h"
 #include "private/weak.h"
-#include "test/cmocka.h"
+
+#ifdef TEST
+#include <test/cmocka.h>
+#endif
 
 static int compare(const void *a, const void *b) {
     struct triggerfish_weak **A = (void *) a;

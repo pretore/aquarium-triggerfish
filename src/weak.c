@@ -4,7 +4,10 @@
 
 #include "private/strong.h"
 #include "private/weak.h"
-#include "test/cmocka.h"
+
+#ifdef TEST
+#include <test/cmocka.h>
+#endif
 
 bool triggerfish_weak_of(struct triggerfish_strong *const strong,
                          struct triggerfish_weak **const out) {
