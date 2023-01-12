@@ -39,8 +39,6 @@ bool triggerfish_weak_destroy(struct triggerfish_weak *object);
 
 /**
  * @brief Receive strong reference for the weak reference.
- * <p>It is expected that <b>release</b> is called upon the returned strong
- * reference once it is done being used.</p>
  * @param [in] object weak reference instance.
  * @param [out] out receive the strong reference.
  * @return On success true, otherwise false if an error has occurred.
@@ -48,6 +46,7 @@ bool triggerfish_weak_destroy(struct triggerfish_weak *object);
  * @throws TRIGGERFISH_WEAK_ERROR_OUT_IS_NULL if out is <i>NULL</i>.
  * @throws TRIGGERFISH_WEAK_ERROR_STRONG_IS_INVALID if the strong reference was
  * invalidated.
+ * @note <b>out</b> must be released once done with it.
  */
 bool triggerfish_weak_strong(const struct triggerfish_weak *object,
                              struct triggerfish_strong **out);

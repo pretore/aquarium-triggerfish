@@ -27,6 +27,7 @@ struct triggerfish_strong;
  * @throws TRIGGERFISH_STRONG_ERROR_OUT_IS_NULL if out is <i>NULL</i>.
  * @throws TRIGGERFISH_STRONG_ERROR_MEMORY_ALLOCATION_FAILED if there is not
  * enough memory to create the strong reference.
+ * @note <b>out</b> must be released once done with it.
  */
 bool triggerfish_strong_of(void *instance,
                            void (*on_destroy)(void *instance),
