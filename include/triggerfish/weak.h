@@ -24,7 +24,7 @@ struct triggerfish_weak;
  * @throws TRIGGERFISH_WEAK_ERROR_MEMORY_ALLOCATION_FAILED if there is
  * insufficient memory to create the weak reference.
  * @throws TRIGGERFISH_WEAK_ERROR_STRONG_IS_INVALID if the strong reference
- * instance has been invalidated.
+ * was invalidated.
  */
 bool triggerfish_weak_of(struct triggerfish_strong *strong,
                          struct triggerfish_weak **out);
