@@ -101,10 +101,9 @@ bool triggerfish_strong_release(struct triggerfish_strong *const object) {
         triggerfish_error = TRIGGERFISH_STRONG_ERROR_OBJECT_IS_NULL;
         return false;
     }
-    uintmax_t expected;
     uintmax_t desired;
+    uintmax_t expected = atomic_load(&object->counter);
     do {
-        expected = atomic_load(&object->counter);
         seagrass_required_true(seagrass_uintmax_t_subtract(
                 expected, 1, &desired));
     } while (!atomic_compare_exchange_strong(&object->counter,
