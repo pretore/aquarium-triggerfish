@@ -129,21 +129,15 @@ bool triggerfish_strong_release(struct triggerfish_strong *const object) {
     }
     seagrass_required_true(!pthread_mutex_unlock(&object->lock));
     do {
-        switch (pthread_mutex_destroy(&object->lock)) {
-            default: {
-                seagrass_required_true(false);
-            }
-            case EBUSY: {
-                const struct timespec delay = {
-                        .tv_nsec = 1000
-                };
-                seagrass_required_true(!nanosleep(&delay, NULL)
-                                       || errno == EINTR);
-                continue;
-            }
-            case 0: {
-                /* fall-through */
-            }
+        int error;
+        if ((error = pthread_mutex_destroy(&object->lock))) {
+            seagrass_required_true(EBUSY == error);
+            const struct timespec delay = {
+                    .tv_nsec = 1000
+            };
+            seagrass_required_true(!nanosleep(&delay, NULL)
+                                   || errno == EINTR);
+            continue;
         }
         break;
     } while (true);
@@ -244,8 +238,8 @@ void triggerfish_strong_unregister(struct triggerfish_strong *const object,
                     break;
                 }
                 while (weak != *item
-                       && coral_red_black_tree_set_next(item,
-                                                        (const void **) &item));
+                       && coral_red_black_tree_set_next(
+                               item, (const void **) &item));
                 if (weak == *item) {
                     seagrass_required_true(
                             coral_red_black_tree_set_remove_item(
