@@ -171,17 +171,11 @@ bool triggerfish_strong_register(struct triggerfish_strong *const object,
                                  struct triggerfish_weak *const weak) {
     assert(object);
     assert(weak);
-    switch (pthread_mutex_lock(&object->lock)) {
-        default: {
-            seagrass_required_true(false);
-        }
-        case EINVAL: {
-            triggerfish_error = TRIGGERFISH_STRONG_ERROR_OBJECT_IS_INVALID;
-            return false;
-        }
-        case 0: {
-            /* fall-through */
-        }
+    int error;
+    if ((error = pthread_mutex_lock(&object->lock))) {
+        seagrass_required_true(EINVAL == error);
+        triggerfish_error = TRIGGERFISH_STRONG_ERROR_OBJECT_IS_INVALID;
+        return false;
     }
     const bool result = coral_red_black_tree_set_add(&object->weak_refs,
                                                      &weak);
@@ -210,16 +204,10 @@ void triggerfish_strong_unregister(struct triggerfish_strong *const object,
                                    const struct triggerfish_weak *const weak) {
     assert(object);
     assert(weak);
-    switch (pthread_mutex_lock(&object->lock)) {
-        default: {
-            seagrass_required_true(false);
-        }
-        case EINVAL: {
-            return;
-        }
-        case 0: {
-            /* fall-through */
-        }
+    int error;
+    if ((error = pthread_mutex_lock(&object->lock))) {
+        seagrass_required_true(EINVAL == error);
+        return;
     }
     if (!coral_red_black_tree_set_remove(&object->weak_refs,
                                          &weak)) {
