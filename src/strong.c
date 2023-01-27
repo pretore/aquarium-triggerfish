@@ -81,10 +81,9 @@ bool triggerfish_strong_retain(struct triggerfish_strong *const object) {
         triggerfish_error = TRIGGERFISH_STRONG_ERROR_OBJECT_IS_NULL;
         return false;
     }
-    uintmax_t expected;
     uintmax_t desired;
+    uintmax_t expected = atomic_load(&object->counter);
     do {
-        expected = atomic_load(&object->counter);
         if (!expected) {
             triggerfish_error = TRIGGERFISH_STRONG_ERROR_OBJECT_IS_INVALID;
             return false;
