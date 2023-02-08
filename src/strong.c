@@ -127,19 +127,7 @@ bool triggerfish_strong_release(struct triggerfish_strong *const object) {
                                == coral_error);
     }
     seagrass_required_true(!pthread_mutex_unlock(&object->lock));
-    do {
-        int error;
-        if ((error = pthread_mutex_destroy(&object->lock))) {
-            seagrass_required_true(EBUSY == error);
-            const struct timespec delay = {
-                    .tv_nsec = 1000
-            };
-            seagrass_required_true(!nanosleep(&delay, NULL)
-                                   || errno == EINTR);
-            continue;
-        }
-        break;
-    } while (true);
+    seagrass_required_true(!pthread_mutex_destroy(&object->lock));
     seagrass_required_true(coral_red_black_tree_set_invalidate(
             &object->weak_refs, NULL));
     object->on_destroy(object->instance);
