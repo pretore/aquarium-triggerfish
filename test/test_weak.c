@@ -99,6 +99,52 @@ static void check_of(void **state) {
     triggerfish_error = TRIGGERFISH_ERROR_NONE;
 }
 
+static void check_copy_of_error_on_other_is_null(void **state) {
+    triggerfish_error = TRIGGERFISH_ERROR_NONE;
+    assert_false(triggerfish_weak_copy_of(NULL, (void *) 1));
+    assert_int_equal(TRIGGERFISH_WEAK_ERROR_OTHER_IS_NULL, triggerfish_error);
+    triggerfish_error = TRIGGERFISH_ERROR_NONE;
+}
+
+static void check_copy_of_error_on_out_is_null(void **state) {
+    triggerfish_error = TRIGGERFISH_ERROR_NONE;
+    assert_false(triggerfish_weak_copy_of((void *) 1, NULL));
+    assert_int_equal(TRIGGERFISH_WEAK_ERROR_OUT_IS_NULL, triggerfish_error);
+    triggerfish_error = TRIGGERFISH_ERROR_NONE;
+}
+
+static void check_copy_of_error_on_memory_allocation_failed(void **state) {
+    triggerfish_error = TRIGGERFISH_ERROR_NONE;
+    malloc_is_overridden = calloc_is_overridden = realloc_is_overridden
+            = posix_memalign_is_overridden = true;
+    assert_false(triggerfish_weak_copy_of((void *) 1, (void *) 1));
+    malloc_is_overridden = calloc_is_overridden = realloc_is_overridden
+            = posix_memalign_is_overridden = false;
+    assert_int_equal(TRIGGERFISH_WEAK_ERROR_MEMORY_ALLOCATION_FAILED,
+                     triggerfish_error);
+    triggerfish_error = TRIGGERFISH_ERROR_NONE;
+}
+
+static void check_copy_of(void **state) {
+    triggerfish_error = TRIGGERFISH_ERROR_NONE;
+    void *instance = malloc(1);
+    struct triggerfish_strong *strong;
+    assert_true(triggerfish_strong_of(instance, on_destroy, &strong));
+    struct triggerfish_weak *out;
+    assert_true(triggerfish_weak_of(strong, &out));
+    struct triggerfish_weak *copy;
+    assert_true(triggerfish_weak_copy_of(out, &copy));
+    assert_int_equal(atomic_load(&copy->strong), atomic_load(&out->strong));
+    assert_ptr_equal(atomic_load(&copy->strong), strong);
+    expect_function_call(on_destroy);
+    assert_true(triggerfish_strong_release(strong));
+    assert_ptr_equal(atomic_load(&out->strong), 0);
+    assert_ptr_equal(atomic_load(&copy->strong), 0);
+    assert_true(triggerfish_weak_destroy(out));
+    assert_true(triggerfish_weak_destroy(copy));
+    triggerfish_error = TRIGGERFISH_ERROR_NONE;
+}
+
 static void check_strong_error_on_object_is_null(void **state) {
     triggerfish_error = TRIGGERFISH_ERROR_NONE;
     assert_false(triggerfish_weak_strong(NULL, (void *)1));
@@ -153,6 +199,10 @@ int main(int argc, char *argv[]) {
             cmocka_unit_test(check_of_error_on_memory_allocation_failed),
             cmocka_unit_test(check_of_error_on_strong_is_invalid),
             cmocka_unit_test(check_of),
+            cmocka_unit_test(check_copy_of_error_on_other_is_null),
+            cmocka_unit_test(check_copy_of_error_on_out_is_null),
+            cmocka_unit_test(check_copy_of_error_on_memory_allocation_failed),
+            cmocka_unit_test(check_copy_of),
             cmocka_unit_test(check_strong_error_on_object_is_null),
             cmocka_unit_test(check_strong_error_on_out_is_null),
             cmocka_unit_test(check_strong_error_strong_is_invalid),

@@ -10,6 +10,7 @@
 #define TRIGGERFISH_WEAK_ERROR_STRONG_IS_INVALID                    3
 #define TRIGGERFISH_WEAK_ERROR_MEMORY_ALLOCATION_FAILED             4
 #define TRIGGERFISH_WEAK_ERROR_OUT_IS_NULL                          5
+#define TRIGGERFISH_WEAK_ERROR_OTHER_IS_NULL                        6
 
 struct triggerfish_strong;
 struct triggerfish_weak;
@@ -28,6 +29,19 @@ struct triggerfish_weak;
  */
 bool triggerfish_weak_of(struct triggerfish_strong *strong,
                          struct triggerfish_weak **out);
+
+/**
+ * @brief Create copy of weak reference.
+ * @param [in] other from which a copy is to be be created.
+ * @param [out] out receive the copy.
+ * @return On success true, otherwise false if an error has occurred.
+ * @throws TRIGGERFISH_WEAK_ERROR_OTHER_IS_NULL if other is <i>NULL</i>.
+ * @throws TRIGGERFISH_WEAK_ERROR_OUT_IS_NULL if out is <i>NULL</i>.
+ * @throws TRIGGERFISH_WEAK_ERROR_MEMORY_ALLOCATION_FAILED if there is
+ * insufficient memory to copy the weak reference.
+ */
+bool triggerfish_weak_copy_of(const struct triggerfish_weak *other,
+                              struct triggerfish_weak **out);
 
 /**
  * @brief Destroy a weak reference.
