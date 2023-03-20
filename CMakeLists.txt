@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(aquarium-triggerfish VERSION 1.2.0
+project(aquarium-triggerfish VERSION 2.0.0
         LANGUAGES C
         DESCRIPTION "References in C")
 
@@ -14,11 +14,12 @@ find_package(Doxygen OPTIONAL_COMPONENTS dot mscgen dia)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     include(cmake/FetchAquariumCMocka.cmake)
 endif()
+include(cmake/FetchAquariumSeaUrchin.cmake)
+include(cmake/FetchAquariumSeagrass.cmake)
 include(cmake/FetchAquariumCoral.cmake)
 
 # Sources
 set(EXPORTED_HEADER_FILES
-        include/triggerfish/error.h
         include/triggerfish/strong.h
         include/triggerfish/weak.h
         include/triggerfish.h)
@@ -26,7 +27,6 @@ set(SOURCES
         ${EXPORTED_HEADER_FILES}
         src/private/strong.h
         src/private/weak.h
-        src/error.c
         src/strong.c
         src/triggerfish.c
         src/weak.c)
@@ -48,6 +48,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
             PUBLIC
                 ${CMAKE_THREAD_LIBS_INIT}
                 aquarium-cmocka
+                aquarium-sea-urchin
+                aquarium-seagrass
                 aquarium-coral)
     target_include_directories(${PROJECT_NAME}
             PUBLIC
@@ -94,6 +96,8 @@ else()
     target_link_libraries(${PROJECT_NAME}
             PUBLIC
                 ${CMAKE_THREAD_LIBS_INIT}
+                aquarium-sea-urchin
+                aquarium-seagrass
                 aquarium-coral)
     set_target_properties(${PROJECT_NAME}
             PROPERTIES
