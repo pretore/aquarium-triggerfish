@@ -100,7 +100,7 @@ int triggerfish_strong_release(struct triggerfish_strong *const object) {
     }
     int error;
     seagrass_required_true(!pthread_mutex_lock(&object->lock));
-    const uintptr_t check = (uintptr_t) object;
+    uintptr_t check = (uintptr_t) object;
     union {
         struct coral_red_black_tree_container_entry *entry;
         struct triggerfish_weak **weak;
