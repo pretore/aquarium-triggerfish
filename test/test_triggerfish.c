@@ -37,15 +37,15 @@ check_case_where_weak_is_added_and_removed_from_strong(void **state) {
     assert_int_equal(triggerfish_strong_of(malloc(1), on_destroy, &strong), 0);
     struct triggerfish_weak *weak;
     uintmax_t count;
-    assert_int_equal(coral_red_black_tree_set_count(
+    assert_int_equal(coral_red_black_tree_container_count(
             &strong->weak_refs, &count), 0);
     assert_int_equal(count, 0);
     assert_int_equal(triggerfish_weak_of(strong, &weak), 0);
-    assert_int_equal(coral_red_black_tree_set_count(
+    assert_int_equal(coral_red_black_tree_container_count(
             &strong->weak_refs, &count), 0);
     assert_int_equal(count, 1);
     assert_int_equal(triggerfish_weak_destroy(weak), 0);
-    assert_int_equal(coral_red_black_tree_set_count(
+    assert_int_equal(coral_red_black_tree_container_count(
             &strong->weak_refs, &count), 0);
     assert_int_equal(count, 0);
     expect_function_call(on_destroy);

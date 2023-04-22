@@ -17,7 +17,7 @@ struct triggerfish_strong {
     atomic_uintmax_t counter;
     void *instance;
     pthread_mutex_t lock;
-    struct coral_red_black_tree_set weak_refs;
+    struct coral_red_black_tree_container weak_refs;
 
     void (*on_destroy)(void *instance);
 };

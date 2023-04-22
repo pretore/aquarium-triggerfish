@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdatomic.h>
 #include <assert.h>
 #include <seagrass.h>
 #include <triggerfish.h>
