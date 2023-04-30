@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(aquarium-triggerfish VERSION 2.0.2
+project(aquarium-triggerfish VERSION 2.0.3
         LANGUAGES C
         DESCRIPTION "References in C")
 

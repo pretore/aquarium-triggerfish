@@ -168,7 +168,7 @@ int triggerfish_strong_register(struct triggerfish_strong *const object,
         if ((error = coral_red_black_tree_container_add(
                 &object->weak_refs, ptr.entry))) {
             seagrass_required_true(
-                    CORAL_RED_BLACK_TREE_CONTAINER_ERROR_ENTRY_ALREADY_EXITS
+                    CORAL_RED_BLACK_TREE_CONTAINER_ERROR_ENTRY_ALREADY_EXISTS
                     == error);
             seagrass_required_true(!coral_red_black_tree_container_free(
                     ptr.entry));
